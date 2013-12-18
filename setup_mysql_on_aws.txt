@@ -1,0 +1,112 @@
+360k data set:
+
+mysql -u root -p
+
+CREATE SCHEMA `273project` ;
+
+mysql -u root -p --local-infile=1 273project
+
+CREATE TABLE `273project`.`main_360k` (
+  `usersha1` VARCHAR(40) NULL,
+  `artmbid` VARCHAR(70) NULL,
+  `artname` VARCHAR(200) NULL,
+  `plays` INT NULL)
+COMMENT = 'Table containing data for last.fm 360K users(usersha1,artmbid,artname,plays)';
+
+LOAD DATA LOCAL INFILE './usersha1-artmbid-artname-plays.tsv' INTO TABLE main_360k FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (usersha1,artmbid,artname,plays);
+Query OK, 17559530 rows affected, 15 warnings (8 min 39.80 sec)
+Records: 17559530  Deleted: 0  Skipped: 0  Warnings: 15
+
+ALTER TABLE `273project`.`main_360k` 
+ADD INDEX `artname_1` USING BTREE (`artname` ASC);
+
+CREATE TABLE `273project`.`profile_360k` (
+  `usersha1` VARCHAR(40) NULL,
+  `gender` VARCHAR(10) NULL,
+  `age` INT NULL,
+  `country` VARCHAR(90) NULL,
+  `registered` VARCHAR(90) NULL)
+COMMENT = 'Table containing data for last.fm 360K users(usersha1,gender,age,country,registered)';
+
+LOAD DATA LOCAL INFILE './usersha1-profile.tsv' INTO TABLE profile_360k FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (usersha1,gender,age,country,registered);
+
+ALTER TABLE `273project`.`profile_360k` 
+ADD INDEX `usersha1_1` USING BTREE (`usersha1` ASC);
+
+ALTER TABLE `273project`.`main_360k` 
+ PARTITION BY KEY(artname) PARTITIONS 10;
+Query OK, 17559530 rows affected (1 hour 25 min 17.49 sec)
+Records: 17559530  Duplicates: 0  Warnings: 0
+
+SELECT PARTITION_NAME, TABLE_ROWS 
+FROM INFORMATION_SCHEMA.PARTITIONS 
+WHERE TABLE_NAME = 'main_360k';
+
+SELECT DISTINCT temptable.usersha1,temptable.gender,temptable.age,temptable.country from (SELECT profile_360k.usersha1, profile_360k.gender, profile_360k.age, profile_360k.country FROM profile_360k INNER JOIN main_360k ON profile_360k.usersha1=main_360k.usersha1 and artname="the beatles") as temptable;
+76339 rows in set (5.17 sec)
+
+EXPLAIN PARTITIONS SELECT DISTINCT temptable.usersha1,temptable.gender,temptable.age,temptable.country from (SELECT profile_360k.usersha1, profile_360k.gender, profile_360k.age, profile_360k.country FROM profile_360k INNER JOIN main_360k ON profile_360k.usersha1=main_360k.usersha1 and artname="the beatles") as temptable;
+
+ALTER TABLE `273project`.`main_360k` 
+ADD INDEX `usersha1_1` USING BTREE (`usersha1` ASC);
+
+------------------------------------------------------------------
+1k data set:
+
+CREATE TABLE `273project`.`main_1k` (
+  `userid` VARCHAR(20) NULL,
+  `timestamp` DATETIME NULL,
+  `artid` VARCHAR(100) NULL,
+  `artname` VARCHAR(100) NULL,
+  `traid` VARCHAR(100) NULL,
+  `traname` VARCHAR(100) NULL)
+COMMENT = 'Table containing data for last.fm 1K users (userid,timestamp,artid,artname,traid,traname)';
+
+LOAD DATA LOCAL INFILE './userid-timestamp-artid-artname-traid-traname.tsv' INTO TABLE main_1k FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (userid,timestamp,artid,artname,traid,traname);
+Query OK, 19150819 rows affected, 65535 warnings (10 min 16.71 sec)
+Records: 19150819  Deleted: 0  Skipped: 0  Warnings: 19156378
+
+ALTER TABLE `273project`.`main_1k`
+ADD INDEX `traname_1` USING BTREE (`traname` ASC);
+
+CREATE TABLE `273project`.`profile_1k` (
+  `userid` VARCHAR(40) NULL,
+  `gender` VARCHAR(10) NULL,
+  `age` INT NULL,
+  `country` VARCHAR(90) NULL,
+  `registered` VARCHAR(90) NULL)
+COMMENT = 'Table containing data for last.fm 1K users(userid,gender,age,country,registered)';
+
+
+LOAD DATA LOCAL INFILE './userid-profile.tsv' INTO TABLE profile_1k FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (userid,gender,age,country,registered);
+
+ALTER TABLE `273project`.`profile_1k`
+ADD INDEX `userid_1` USING BTREE (`userid` ASC);
+
+ALTER TABLE `273project`.`main_1k`
+ADD INDEX `userid_1` USING BTREE (`userid` ASC);
+
+select distinct temptable.userid, temptable.gender, temptable.age, temptable.country 
+from (select profile_1k.userid, profile_1k.gender,profile_1k.age,profile_1k.country from profile_1k INNER JOIN main_1k ON
+profile_1k.userid=main_1k.userid and main_1k.traname="Eleanor Rigby") as temptable;
+
+select DAYNAME(timestamp), HOUR(timestamp) from main_1k WHERE main_1k.traname="Eleanor Rigby";
+
+------------------------------------------
+
+Final Queries:
+
+SELECT profile_360k.gender, profile_360k.age, profile_360k.country FROM profile_360k INNER JOIN main_360k ON profile_360k.usersha1=main_360k.usersha1 and artname="radiohead";
+77347 rows in set (6.52 sec)
+
+SELECT DISTINCT temptable.userid, temptable.gender, temptable.age, temptable.country
+FROM (SELECT profile_1k.userid, profile_1k.gender,profile_1k.age,profile_1k.country FROM profile_1k INNER JOIN main_1k ON
+profile_1k.userid=main_1k.userid and main_1k.traname="Airbag") as temptable;
+290 rows in set (1.56 sec)
+
+select DAYNAME(timestamp), HOUR(timestamp) from main_1k WHERE main_1k.traname="Videotape";
+2073 rows in set (2.10 sec)
+
+
+-------------------
+
