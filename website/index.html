@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>273Project</title>
+    <link href="css/foundation.css" rel="stylesheet">
+    <script src="js/modernizr.js"></script>
+</head>
+
+<body>
+    <div class="row">
+        <div class="large-12 columns">
+            <h1>last.fm content dashboards</h1>
+
+            <h5 style="font-style: italic">CmpE 273 Project</h5>
+        </div>
+    </div>
+    <hr>
+
+    <div class="row">
+        <div class="large-12 columns">
+            <dl class="tabs" data-tab="">
+                <dd class="active"><a href="#panel2-1" id="trackpanel">Track
+                Analysis</a></dd>
+
+                <dd><a href="#panel2-2" id="artistpanel">Artist
+                Analysis</a></dd>
+
+                <dd><a href="#panel2-3" id="usersimilaritypanel">User
+                Similarity</a></dd>
+
+                <dd><a href="#panel2-4" id="networkanalysispanel">Network
+                Analysis</a></dd>
+            </dl>
+
+            <div class="tabs-content">
+                <div class="large-12 columns content active" id="panel2-1">
+                    <form>
+                        <div class="row">
+                            <div class="large-6 medium-6 columns">
+                                <div class="alert-box info radius" data-alert=
+                                "">
+                                    Find out what kind of users listen to this
+                                    song <a class="close" href="#">×</a>
+                                </div><input id="text_track" placeholder=
+                                "Enter Track Name" type="text"> <a class=
+                                "small button" id="button_track">Go!</a><br>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="large-12 columns content" id="panel2-2">
+                    <form>
+                        <div class="row">
+                            <div class="large-6 medium-6 columns">
+                                <div class="alert-box info radius" data-alert=
+                                "">
+                                    Find out what kind of users listen to this
+                                    artist <a class="close" href="#">×</a>
+                                </div><input id="text_artist" placeholder=
+                                "Enter Artist Name" type="text"> <a class=
+                                "small button" id="button_artist">Go!</a><br>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="large-12 columns content" id="panel2-3">
+                    <form>
+                        <div class="row">
+                            <div class="large-6 medium-6 columns">
+                                <div class="alert-box info radius" data-alert=
+                                "">
+                                    Find out the music compatibility between
+                                    two users <a class="close" href="#">×</a>
+                                </div><input id="text_usersimilarity1"
+                                placeholder="Enter User1 Name" type="text">
+                                <input id="text_usersimilarity2" placeholder=
+                                "Enter User2 Name" type="text"> <a class=
+                                "small button" id=
+                                "button_usersimilarity">Go!</a><br>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="large-12 columns content" id="panel2-4">
+                    <form>
+                        <div class="row">
+                            <div class="large-6 medium-6 columns">
+                                <div class="alert-box info radius" data-alert=
+                                "">
+                                    Trends from the entire network <a class=
+                                    "close" href="#">×</a>
+                                </div>This will have images and lists
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="large-12 columns" id="replacethis"></div><script src=
+    "js/jquery.js"></script><script src="js/foundation.min.js"></script><script src="js/canvasjs.min.js" type="text/javascript"></script>
+<script src="http://js.api.here.com/se/2.5.3/jsl.js?with=maps,datarendering"
+    type="text/javascript"></script>
+<script src="js/app.js"></script>
+<script>
+$(document).foundation();
+</script>
+</body>
+</html>
